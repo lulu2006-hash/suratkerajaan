@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game Surat Kerajaan Nusantara</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Almendra+SC&display=swap');
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Almendra SC', serif;
+      background: #faf2d9;
+      color: #3e2f1c;
+    }
+    .navbar {
+      background-color: #6b4f00;
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 24px;
+    }
+    .navbar a {
+      color: #fff8e1;
+      text-decoration: none;
+      margin: 0 18px;
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+    .navbar a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .login-box {
+      background: #ab9d55;
+      padding: 35px;
+      margin: 120px auto;
+      width: 350px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #c7b27a80;
+      border: 2px solid #b38b00;
+    }
+    .login-box input, .login-box button {
+      width: 100%;
+      padding: 18px;
+      margin-top: 18px;
+      font-family: 'Almendra SC', serif;
+      font-size: 1.6em;
+      border: 2px solid #b38b00;
+      border-radius: 5px;
+    }
+    .login-box button {
+      background-color: #b38b00;
+      color: #fff8e1;
+      border: none;
+      cursor: pointer;
+    }
+    .login-box button:hover {
+      background-color: #9b7600;
+    }
+    h1 {
+      text-align: center;
+      font-size: 6em;
+      margin-bottom: 10px;
+      text-shadow: 3px 3px 0 #b38b00;
+    }
+    h2 {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+    #score {
+      font-weight: bold;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      text-align: right;
+      padding-right: 30px;
+    }
+    #timer {
+      font-weight: bold;
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      text-align: right;
+      padding-right: 30px;
+    }
+    #game-container {
+      background: #aca78f;
+      border: 8px double #b38b00;
+      border-radius: 20px;
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+      padding: 30px 50px;
+      box-shadow: 0 0 20px #c7b27a80;
+      position: relative;
+    }
+    .level h2 {
+      text-align: center;
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-decoration: underline;
+    }
+    .level p {
+      font-style: italic;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      text-align: justify;
+      font-size: 1.5em;
+    }
+    .question {
+      background: #f9f5e9;
+      border-left: 6px solid #b38b00;
+      padding: 18px 22px;
+      margin-bottom: 20px;
+      font-size: 1.6em;
+      box-shadow: inset 2px 2px 5px #d4b80088;
+    }
+    .options button {
+      margin: 8px 10px 8px 0;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 2px solid #ffffff;
+      background: #fff8e1;
+      font-family: 'Almendra SC', serif;
+      font-size: 1.6em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .options button:hover:not(:disabled) {
+      background-color: #ffed99;
+    }
+    .correct {
+      background-color: #a0d995 !important;
+      border-color: #3c7d0a !important;
+      color: #21420a;
+      cursor: default;
+    }
+    .wrong {
+      background-color: #f28b82 !important;
+      border-color: #a1241a !important;
+      color: #700a09;
+      cursor: default;
+    }
+    #next-level, #restart-game {
+      display: none;
+      margin: 20px auto 0 auto;
+      padding: 16px 40px;
+      font-size: 1.8em;
+      font-weight: bold;
+      background-color: #b38b00;
+      color: #fff8e1;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #a57e00bb;
+      max-width: 350px;
+      display: block;
+    }
+    #next-level:hover, #restart-game:hover {
+      background-color: #9b7600;
+    }
+    #final-score {
+      text-align: center;
+      font-size: 2.5em;
+      font-weight: bold;
+      margin-top: 30px;
+      color: #6b4f00;
+      text-shadow: 1px 1px 0 #d4b800;
+    }
+    #kerajaan-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      margin: 20px auto;
+      max-width: 800px;
+    }
+    #kerajaan-list button {
+      padding: 25px;
+      font-family: 'Almendra SC', serif;
+      font-size: 1.6em;
+      background: #fff8e1;
+      border: 2px solid #b38b00;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #kerajaan-list button:hover {
+      background-color: #ffed99;
+    }
+    #hasil-kerajaan {
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      padding: 18px;
+      border: 1px solid #b38b00;
+      text-align: center;
+      font-size: 1.4em;
+    }
+    th {
+      background-color: #b38b00;
+      color: #fff8e1;
+    }
+    .cerita-box {
+      background: #fffef9;
+      border: 4px solid #b38b00;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    .cerita-box h3 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #6b4f00;
+    }
+    .cerita-box p {
+      line-height: 1.6;
+      text-align: justify;
+      font-size: 1.4em;
+    }
+    .feedback-animation {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2.5em;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      opacity: 0;
+      animation: popFade 2s ease-in-out forwards;
+    }
+    .correct-animation {
+      color: #ffd700;
+    }
+    .wrong-animation {
+      color: #ff0000;
+    }
+    @keyframes popFade {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+      100% { opacity: 0; transform: translateX(-50%) scale(1); }
+    }
+    .leaderboard-table h3 {
+      font-size: 2.2em;
+      margin: 20px 0 10px;
+      color: #6b4f00;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="login-section">
+    <div class="login-box">
+      <h2 style="font-size: 2.5em;">Login</h2>
+      <input type="text" id="username" placeholder="Nama Pengguna" required />
+      <button onclick="login()">Masuk</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home-section" class="hidden">
+    <div class="navbar">
+      <div>
+        <a href="#" onclick="showSection('home')">Home</a>
+        <a href="#" onclick="showSection('quiz')">Quiz</a>
+        <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
+        <a href="#" onclick="showSection('cerita')">Cerita</a>
+      </div>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+    <div class="container">
+      <h1>Surat Kerajaan Nusantara</h1>
+      <p id="welcomeText" style="font-size: 1.8em; text-align: center;"></p>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz-section" class="hidden">
+    <div class="navbar">
+      <div>
+        <a href="#" onclick="showSection('home')">Home</a>
+        <a href="#" onclick="showSection('quiz')">Quiz</a>
+        <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
+        <a href="#" onclick="showSection('cerita')">Cerita</a>
+      </div>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+    <div class="container">
+      <h1>Surat Kerajaan Nusantara</h1>
+      <div id="kerajaan-list">
+        <button onclick="muatLevel('Samudra Pasai')">Samudra Pasai</button>
+        <button onclick="muatLevel('Aceh Darussalam')">Aceh Darussalam</button>
+        <button onclick="muatLevel('Demak')">Demak</button>
+        <button onclick="muatLevel('Mataram')">Mataram</button>
+        <button onclick="muatLevel('Banten')">Banten</button>
+        <button onclick="muatLevel('Gowa-Tallo')">Gowa-Tallo</button>
+        <button onclick="muatLevel('Ternate')">Ternate</button>
+        <button onclick="muatLevel('Tidore')">Tidore</button>
+        <button onclick="muatLevel('Kalingga')">Kalingga</button>
+        <button onclick="muatLevel('Singasari')">Singasari</button>
+      </div>
+      <div id="hasil-kerajaan"></div>
+      <div id="score">Skor: 0</div>
+      <div id="timer">Waktu tersisa: 02:00</div>
+      <div id="game-container"></div>
+      <button id="next-level" onclick="lanjutLevel()">Lanjut ke Soal Berikutnya</button>
+      <button id="restart-game" onclick="ulangPermainan()">Ulangi Permainan</button>
+      <div id="final-score"></div>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div id="leaderboard-section" class="hidden">
+    <div class="navbar">
+      <div>
+        <a href="#" onclick="showSection('home')">Home</a>
+        <a href="#" onclick="showSection('quiz')">Quiz</a>
+        <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
+        <a href="#" onclick="showSection('cerita')">Cerita</a>
+      </div>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+    <div class="container">
+      <h1>Leaderboard</h1>
+      <div id="leaderboard-tables"></div>
+    </div>
+  </div>
+
+  <!-- CERITA -->
+  <div id="cerita-section" class="hidden">
+    <div class="navbar">
+      <div>
+        <a href="#" onclick="showSection('home')">Home</a>
+        <a href="#" onclick="showSection('quiz')">Quiz</a>
+        <a href="#" onclick="showSection('leaderboard')">Leaderboard</a>
+        <a href="#" onclick="showSection('cerita')">Cerita</a>
+      </div>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+    <div class="container">
+      <h1>Cerita Kerajaan Nusantara</h1>
+      <div class="cerita-box">
+        <h3>Samudra Pasai</h3>
+        <p>Kerajaan Samudra Pasai, berdiri pada abad ke-13 di pesisir utara Aceh, adalah kerajaan Islam pertama di Nusantara. Didirikan oleh <strong>Malikussaleh</strong>, kerajaan ini berkembang menjadi pusat perdagangan internasional dengan pelabuhan utama bernama <strong>Pasai</strong>. Agama <strong>Islam</strong> menjadi pilar utama, menarik pedagang dari Arab, India, dan Tiongkok. Samudra Pasai menggunakan mata uang emas bernama <strong>Deureuham</strong>, yang memperkuat ekonominya. Kerajaan ini juga terkenal dengan penyebaran Islam melalui pendidikan dan kesusastraan, seperti Hikayat Raja-Raja Pasai. Namun, pada tahun <strong>1521</strong>, Samudra Pasai diserang oleh <strong>Portugis</strong>, yang mengincar kekayaan perdagangannya. Meski menghadapi tekanan, warisan budaya dan agama Samudra Pasai tetap hidup, menjadikannya simbol awal kejayaan Islam di Nusantara.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Aceh Darussalam</h3>
+        <p>Kesultanan Aceh Darussalam, yang mencapai puncak kejayaan pada abad ke-17 di bawah <strong>Sultan Iskandar Muda</strong>, adalah kekuatan maritim terkemuka di Asia Tenggara. Berpusat di Aceh, kerajaan ini menguasai perdagangan <strong>lada</strong>, komoditas yang sangat dicari dunia. <strong>Benteng Indra Patra</strong> menjadi simbol pertahanan militernya. Aceh juga memiliki armada laut yang kuat, menyaingi kekuatan Eropa. <strong>Masjid Baiturrahman</strong>, dengan arsitektur megah, menjadi pusat keagamaan dan budaya. Pada abad ke-19, Aceh terlibat dalam <strong>Perang Aceh</strong> melawan <strong>Belanda</strong>, yang berlangsung puluhan tahun karena semangat juang rakyatnya. Kesultanan ini juga menghasilkan tokoh-tokoh seperti Cut Nyak Dhien dan Teuku Umar. Aceh Darussalam meninggalkan warisan budaya Islam yang kaya, termasuk manuskrip dan tradisi seni, yang masih dihormati hingga kini.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Demak</h3>
+        <p>Kerajaan Demak, didirikan oleh <strong>Raden Patah</strong> pada akhir abad ke-15, menjadi pusat penyebaran <strong>agama Islam</strong> di Jawa. Terletak di pesisir utara Jawa Tengah, Demak menggantikan pengaruh Hindu-Buddha Majapahit. <strong>Masjid Agung Demak</strong>, dengan tiang-tiang kayu berukir, adalah salah satu masjid tertua di Indonesia dan simbol keimanan. <strong>Pati Unus</strong>, dikenal sebagai Laksamana Demak, memimpin serangan berani ke Malaka melawan Portugis pada tahun <strong>1511</strong>. Demak juga menjadi pusat perdagangan beras dan hasil bumi, menarik pedagang dari berbagai wilayah. Di bawah Sultan Trenggana, kerajaan ini memperluas wilayah hingga ke Jawa Timur. Demak meletakkan fondasi bagi kerajaan-kerajaan Islam di Jawa, dengan warisan budaya seperti seni ukir dan tradisi keagamaan yang kuat.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Mataram</h3>
+        <p>Kesultanan Mataram Islam, yang berpusat di <strong>Kotagede</strong>, Yogyakarta, mencapai kejayaan di bawah <strong>Sultan Agung</strong> pada abad ke-17. Dikenal sebagai <strong>kesultanan</strong>, Mataram menguasai Jawa Tengah dan Timur, menantang dominasi VOC Belanda. Sultan Agung memimpin serangan besar ke <strong>Batavia</strong> pada 1628-1629, meski tidak berhasil menaklukkannya. Mataram juga kaya akan warisan budaya, termasuk <strong>Candi Prambanan</strong>, yang meski berasal dari era Hindu, tetap dihormati. Kerajaan ini mengembangkan sistem pertanian dan irigasi yang canggih, mendukung perekonomian agraris. Sultan Agung juga memperkenalkan kalender Jawa-Islam, menggabungkan tradisi lokal dan Islam. Meski menghadapi konflik internal setelah masa Sultan Agung, Mataram meninggalkan pengaruh besar dalam budaya Jawa, seni, dan pemerintahan.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Banten</h3>
+        <p>Kesultanan Banten, didirikan oleh <strong>Hasanuddin</strong> pada abad ke-16, adalah pusat perdagangan <strong>lada</strong> di Jawa Barat. Pelabuhan utamanya, <strong>Banten Lama</strong>, ramai dikunjungi pedagang dari Eropa, Tiongkok, dan India. <strong>Masjid Agung Banten</strong>, dengan menara ikoniknya, menjadi pusat keagamaan dan pendidikan Islam. Banten berkembang sebagai kekuatan maritim, tetapi pada tahun <strong>1596</strong>, <strong>Belanda</strong> mulai menekan wilayah ini, memicu konflik panjang. Di bawah Sultan Ageng Tirtayasa, Banten menentang VOC dengan armada lautnya, namun akhirnya melemah karena intrik politik. Banten juga terkenal dengan tradisi seni seperti debus dan tari topeng, yang mencerminkan kekayaan budayanya. Warisan Banten tetap hidup dalam situs sejarah dan tradisi lokalnya.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Gowa-Tallo</h3>
+        <p>Kerajaan Gowa-Tallo, berpusat di Sulawesi Selatan, adalah kekuatan <strong>maritim</strong> yang dipimpin oleh <strong>Sultan Hasanuddin</strong> pada abad ke-17. Benteng <strong>Somba Opu</strong> menjadi pusat pertahanan dan perdagangan. Gowa-Tallo menguasai jalur rempah dan perdagangan laut, menyaingi kekuatan Eropa. <strong>Perang Makassar</strong> (1666-1669) melawan <strong>Belanda</strong> menunjukkan keberanian Sultan Hasanuddin, yang dijuluki "Ayam Jantan dari Timur". Perang berakhir dengan <strong>Perjanjian Bongaya</strong>, yang melemahkan Gowa-Tallo. Kerajaan ini juga kaya akan budaya, dengan tradisi pelayaran dan naskah lontara. Gowa-Tallo meninggalkan warisan sejarah maritim dan semangat perlawanan yang menginspirasi.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Ternate</h3>
+        <p>Kesultanan Ternate, di Maluku, adalah pusat perdagangan <strong>cengkeh</strong> yang dipimpin oleh <strong>Sultan Baabullah</strong> pada abad ke-16. Agama <strong>Islam</strong> menjadi fondasi kerajaan, menarik pedagang dari berbagai wilayah. <strong>Fort Oranje</strong>, awalnya dibangun Portugis, menjadi simbol pertahanan Ternate. Sultan Baabullah berhasil mengusir <strong>Portugis</strong> pada 1575, menjadikan Ternate kekuatan regional. Kerajaan ini juga memiliki sistem pemerintahan yang terorganisir, dengan jabatan seperti jogugu dan kapiten laut. Ternate kaya akan tradisi lisan dan tarian cakalele, mencerminkan identitas budayanya. Warisan Ternate tetap terlihat dalam sejarah rempah dan perlawanan kolonialnya.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Tidore</h3>
+        <p>Kesultanan Tidore, saingan Ternate di Maluku, terkenal dengan perdagangan <strong>pala</strong>. Dipimpin oleh <strong>Sultan Nuku</strong> pada abad ke-18, Tidore menentang <strong>Belanda</strong> dalam perjuangan merebut kembali wilayahnya. Pulau <strong>Tidore</strong> menjadi pusat kerajaan, dengan agama <strong>Islam</strong> sebagai pilar utama. Tidore memiliki armada laut yang kuat, dikenal sebagai kora-kora, untuk perdagangan dan perang. Sultan Nuku, dengan strategi gerilya, berhasil memukul mundur Belanda, menjadikannya pahlawan Maluku. Tidore juga kaya akan budaya, dengan tradisi musik dan tarian yang unik. Warisan Tidore terlihat dalam sejarah perjuangan dan kekayaan rempahnya.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Kalingga</h3>
+        <p>Kerajaan Kalingga, berdiri pada abad ke-7 di Jawa Tengah, dipimpin oleh <strong>Ratu Shima</strong>, seorang pemimpin yang dikenal adil dan tegas. Beragama <strong>Buddha</strong>, Kalingga menjadi pusat perdagangan dengan pelabuhan utama di <strong>Jepara</strong>. Kerajaan ini memiliki sistem pemerintahan yang teratur, dengan hukum yang menekankan kejujuran. Kalingga menjalin hubungan dengan Tiongkok, tercatat dalam catatan Dinasti Tang. Namun, kerajaan ini diserang oleh <strong>Sriwijaya</strong> pada abad ke-7, yang ingin menguasai jalur perdagangan. Kalingga meninggalkan warisan budaya Buddha dan cerita kepemimpinan wanita yang inspiratif.</p>
+      </div>
+      <div class="cerita-box">
+        <h3>Singasari</h3>
+        <p>Kerajaan Singasari, didirikan oleh <strong>Ken Arok</strong> pada abad ke-13 di Jawa Timur, adalah cikal bakal Majapahit. Beragama <strong>Hindu-Buddha</strong>, Singasari berkembang di bawah <strong>Kertanegara</strong>, raja terakhir yang bercita-cita menyatukan Nusantara. <strong>Candi Singosari</strong> menjadi peninggalan arsitektur penting, mencerminkan keagungan budaya. Kertanegara mengirim ekspedisi Pamalayu untuk menjalin aliansi dengan kerajaan Melayu. Namun, pada 1292, Singasari diserang oleh <strong>Mongol</strong> yang bekerja sama dengan Jayakatwang, menyebabkan keruntuhan kerajaan. Meski singkat, Singasari meletakkan dasar kejayaan Majapahit dan meninggalkan warisan budaya Hindu-Buddha yang kaya.</p>
+      </div>
+    </div>
+  </div>
+
+ <audio id="correct-sound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
+<audio id="wrong-sound" src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+
+  <script>
+    
+    const quizData = {
+      "Samudra Pasai": [
+        { question: "Siapa pendiri Kerajaan Samudra Pasai?", options: ["Malikussaleh", "Sultan Ahmad", "Sultan Zainal Abidin", "Raja Marah Silu"], answer: "Malikussaleh" },
+        { question: "Apa nama pelabuhan utama Samudra Pasai?", options: ["Lhokseumawe", "Pasai", "Barus", "Malaka"], answer: "Pasai" },
+        { question: "Agama resmi Samudra Pasai adalah?", options: ["Hindu", "Buddha", "Islam", "Kristen"], answer: "Islam" },
+        { question: "Mata uang Samudra Pasai disebut?", options: ["Dinar", "Dirham", "Deureuham", "Rupiah"], answer: "Deureuham" },
+        { question: "Siapa yang menyerang Samudra Pasai pada 1521?", options: ["Portugis", "Belanda", "Spanyol", "Majapahit"], answer: "Portugis" }
+      ],
+      "Aceh Darussalam": [
+        { question: "Siapa sultan terkenal Aceh Darussalam?", options: ["Iskandar Muda", "Malikussaleh", "Sultan Agung", "Sultan Hasanuddin"], answer: "Iskandar Muda" },
+        { question: "Apa nama benteng utama Aceh?", options: ["Benteng Indra Patra", "Benteng Kuto Besak", "Benteng Vredeburg", "Benteng Marlborough"], answer: "Benteng Indra Patra" },
+        { question: "Komoditas utama Aceh adalah?", options: ["Lada", "Cengkeh", "Pala", "Berambang"], answer: "Lada" },
+        { question: "Perang Aceh melawan siapa?", options: ["Portugis", "Belanda", "Spanyol", "Inggris"], answer: "Belanda" },
+        { question: "Apa nama masjid terkenal di Aceh?", options: ["Masjid Baiturrahman", "Masjid Istiqlal", "Masjid Raya", "Masjid Agung"], answer: "Masjid Baiturrahman" }
+      ],
+      "Demak": [
+        { question: "Siapa pendiri Kerajaan Demak?", options: ["Raden Patah", "Sultan Agung", "Pati Unus", "Sultan Trenggana"], answer: "Raden Patah" },
+        { question: "Apa nama masjid terkenal di Demak?", options: ["Masjid Agung Demak", "Masjid Baiturrahman", "Masjid Raya", "Masjid Istiqlal"], answer: "Masjid Agung Demak" },
+        { question: "Demak terkenal sebagai pusat apa?", options: ["Perdagangan", "Agama Islam", "Seni", "Pertanian"], answer: "Agama Islam" },
+        { question: "Siapa yang dikenal sebagai Laksamana Demak?", options: ["Pati Unus", "Raden Patah", "Sultan Trenggana", "Fatahillah"], answer: "Pati Unus" },
+        { question: "Demak menyerang Malaka pada tahun berapa?", options: ["1511", "1521", "1531", "1541"], answer: "1511" }
+      ],
+      "Mataram": [
+        { question: "Siapa raja terkenal Mataram Islam?", options: ["Sultan Agung", "Panembahan Senopati", "Amangkurat I", "Paku Buwono"], answer: "Sultan Agung" },
+        { question: "Apa ibu kota Mataram Islam?", options: ["Kotagede", "Surakarta", "Yogyakarta", "Karta"], answer: "Kotagede" },
+        { question: "Mataram menyerang VOC di kota mana?", options: ["Batavia", "Malaka", "Banten", "Makassar"], answer: "Batavia" },
+        { question: "Sistem pemerintahan Mataram disebut?", options: ["Kesultanan", "Kerajaan", "Keadipatian", "Keselamatan"], answer: "Kesultanan" },
+        { question: "Apa nama candi peninggalan Mataram?", options: ["Prambanan", "Borobudur", "Kalasan", "Sewu"], answer: "Prambanan" }
+      ],
+      "Banten": [
+        { question: "Siapa pendiri Kesultanan Banten?", options: ["Hasanuddin", "Fatahillah", "Sultan Agung", "Maulana Yusuf"], answer: "Hasanuddin" },
+        { question: "Apa nama pelabuhan utama Banten?", options: ["Sunda Kelapa", "Banten Lama", "Merak", "Carita"], answer: "Banten Lama" },
+        { question: "Banten terkenal dengan perdagangan apa?", options: ["Lada", "Cengkeh", "Pala", "Kayu"], answer: "Lada" },
+        { question: "Siapa yang menaklukkan Banten pada 1596?", options: ["Portugis", "Belanda", "Spanyol", "Inggris"], answer: "Belanda" },
+        { question: "Apa nama masjid terkenal di Banten?", options: ["Masjid Agung Banten", "Masjid Raya", "Masjid Istiqlal", "Masjid Baiturrahman"], answer: "Masjid Agung Banten" }
+      ],
+      "Gowa-Tallo": [
+        { question: "Siapa raja terkenal Gowa-Tallo?", options: ["Sultan Hasanuddin", "Sultan Alauddin", "Sultan Malikussaid", "Sultan Tunipalangga"], answer: "Sultan Hasanuddin" },
+        { question: "Apa nama benteng utama Gowa?", options: ["Fort Rotterdam", "Somba Opu", "Ujung Pandang", "Benteng Vredeburg"], answer: "Somba Opu" },
+        { question: "Gowa-Tallo terkenal sebagai pusat apa?", options: ["Perdagangan", "Maritim", "Pertanian", "Seni"], answer: "Maritim" },
+        { question: "Perang Makassar melawan siapa?", options: ["Belanda", "Portugis", "Spanyol", "Inggris"], answer: "Belanda" },
+        { question: "Apa nama perjanjian yang mengakhiri Perang Makassar?", options: ["Bongaya", "Giyanti", "Batavia", "Renville"], answer: "Bongaya" }
+      ],
+      "Ternate": [
+        { question: "Siapa sultan terkenal Ternate?", options: ["Sultan Baabullah", "Sultan Zainal Abidin", "Sultan Malikussaleh", "Sultan Hasanuddin"], answer: "Sultan Baabullah" },
+        { question: "Komoditas utama Ternate adalah?", options: ["Cengkeh", "Lada", "Pala", "Kayu"], answer: "Cengkeh" },
+        { question: "Ternate berseteru dengan siapa?", options: ["Portugis", "Belanda", "Spanyol", "Inggris"], answer: "Portugis" },
+        { question: "Apa nama benteng Ternate?", options: ["Fort Oranje", "Fort Rotterdam", "Benteng Kastela", "Benteng Vredeburg"], answer: "Fort Oranje" },
+        { question: "Agama resmi Ternate adalah?", options: ["Islam", "Hindu", "Buddha", "Kristen"], answer: "Islam" }
+      ],
+      "Tidore": [
+        { question: "Siapa sultan terkenal Tidore?", options: ["Sultan Nuku", "Sultan Baabullah", "Sultan Hasanuddin", "Sultan Alauddin"], answer: "Sultan Nuku" },
+        { question: "Komoditas utama Tidore adalah?", options: ["Pala", "Cengkeh", "Lada", "Kayu"], answer: "Pala" },
+        { question: "Tidore berseteru dengan siapa?", options: ["Belanda", "Portugis", "Spanyol", "Inggris"], answer: "Belanda" },
+        { question: "Apa nama pulau utama Tidore?", options: ["Tidore", "Ternate", "Halmahera", "Ambon"], answer: "Tidore" },
+        { question: "Agama resmi Tidore adalah?", options: ["Islam", "Hindu", "Buddha", "Kristen"], answer: "Islam" }
+      ],
+      "Kalingga": [
+        { question: "Siapa ratu terkenal Kalingga?", options: ["Ratu Shima", "Ratu Tribhuwana", "Ratu Suhita", "Ratu Kalinyamat"], answer: "Ratu Shima" },
+        { question: "Apa agama utama Kalingga?", options: ["Buddha", "Hindu", "Islam", "Kristen"], answer: "Buddha" },
+        { question: "Kalingga terletak di wilayah mana?", options: ["Jawa Tengah", "Jawa Timur", "Sumatra", "Kalimantan"], answer: "Jawa Tengah" },
+        { question: "Apa nama pelabuhan Kalingga?", options: ["Kalingga", "Jepara", "Tuban", "Gresik"], answer: "Jepara" },
+        { question: "Siapa yang menyerang Kalingga?", options: ["Sriwijaya", "Majapahit", "Demak", "Mataram"], answer: "Sriwijaya" }
+      ],
+      "Singasari": [
+        { question: "Siapa pendiri Kerajaan Singasari?", options: ["Ken Arok", "Ken Dedes", "Anusapati", "Kertanegara"], answer: "Ken Arok" },
+        { question: "Apa nama candi peninggalan Singasari?", options: ["Candi Singosari", "Candi Borobudur", "Candi Prambanan", "Candi Sewu"], answer: "Candi Singosari" },
+        { question: "Siapa raja terakhir Singasari?", options: ["Kertanegara", "Ken Arok", "Anusapati", "Tohjaya"], answer: "Kertanegara" },
+        { question: "Singasari diserang oleh siapa?", options: ["Mongol", "Sriwijaya", "Majapahit", "Demak"], answer: "Mongol" },
+        { question: "Agama utama Singasari adalah?", options: ["Hindu-Buddha", "Islam", "Kristen", "Animisme"], answer: "Hindu-Buddha" }
+      ]
+    };
+
+    let scores = [];
+    let currentKerajaan = "";
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timerInterval;
+    const timePerLevel = 120;
+
+    window.onload = function() {
+      const stored = localStorage.getItem("scores");
+      if (stored) scores = JSON.parse(stored);
+
+      if (localStorage.getItem("isLoggedIn") === "true") {
+        showSection("home");
+        const user = localStorage.getItem("username");
+        document.getElementById("welcomeText").innerText = "Halo, " + user + "!";
+        updateLeaderboard();
+      } else {
+        showSection("login");
+      }
+      document.getElementById("next-level").style.display = "none";
+      document.getElementById("restart-game").style.display = "none";
+    };
+
+    function login() {
+      const user = document.getElementById("username").value.trim();
+      if (user) {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("username", user);
+        document.getElementById("welcomeText").innerText = "Halo, " + user + "!";
+        showSection("home");
+      } else {
+        alert("Masukkan nama pengguna!");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("username");
+      showSection("login");
+    }
+
+    function showSection(section) {
+      const sections = ["login", "home", "quiz", "leaderboard", "cerita"];
+      sections.forEach(id => {
+        document.getElementById(id + "-section").classList.add("hidden");
+      });
+      document.getElementById(section + "-section").classList.remove("hidden");
+      if (section === "leaderboard") updateLeaderboard();
+    }
+
+    function muatLevel(nama) {
+      currentKerajaan = nama;
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById("score").innerText = "Skor: 0";
+      document.getElementById("hasil-kerajaan").innerText = "Anda memilih: " + nama;
+      document.getElementById("next-level").style.display = "none";
+      document.getElementById("restart-game").style.display = "none";
+      startTimer();
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const gameContainer = document.getElementById("game-container");
+      const questions = quizData[currentKerajaan];
+      
+      if (!questions) {
+        gameContainer.innerHTML = `<p>Data soal untuk ${currentKerajaan} tidak tersedia.</p>`;
+        document.getElementById("next-level").style.display = "none";
+        document.getElementById("restart-game").style.display = "block";
+        clearInterval(timerInterval);
+        return;
+      }
+      
+      if (currentQuestionIndex >= questions.length) {
+        endLevel();
+        return;
+      }
+
+      const q = questions[currentQuestionIndex];
+      gameContainer.innerHTML = `
+        <div class="level">
+          <h2>${currentKerajaan} - Soal ${currentQuestionIndex + 1}</h2>
+          <p>Surat rahasia dari kerajaan <strong>${currentKerajaan}</strong> ditemukan. Baca dan jawab dengan benar!</p>
+        </div>
+        <div class="question">${q.question}</div>
+        <div class="options">
+          ${q.options.map((opt) => `<button onclick="cekJawaban(this, '${opt}', '${q.answer}')">${opt}</button>`).join('')}
+        </div>
+      `;
+    }
+
+    function cekJawaban(btn, selected, correct) {
+      const buttons = btn.parentNode.querySelectorAll("button");
+      buttons.forEach(b => b.disabled = true);
+      const gameContainer = document.getElementById("game-container");
+      
+      const feedbackDiv = document.createElement("div");
+      feedbackDiv.classList.add("feedback-animation");
+      
+      if (selected === correct) {
+        btn.classList.add("correct");
+        score += 20;
+        feedbackDiv.innerText = "Selamat!";
+        feedbackDiv.classList.add("correct-animation");
+        document.getElementById("correct-sound").play().catch(() => console.log("Audio playback failed"));
+      } else {
+        btn.classList.add("wrong");
+        buttons.forEach(b => {
+          if (b.textContent === correct) {
+            b.classList.add("correct");
+          }
+        });
+        feedbackDiv.innerText = "Semangat!";
+        feedbackDiv.classList.add("wrong-animation");
+        document.getElementById("wrong-sound").play().catch(() => console.log("Audio playback failed"));
+      }
+      
+      gameContainer.appendChild(feedbackDiv);
+      document.getElementById("score").innerText = `Skor: ${score}`;
+      document.getElementById("next-level").style.display = "block";
+      
+      setTimeout(() => {
+        feedbackDiv.remove();
+      }, 2000);
+    }
+
+    function lanjutLevel() {
+      currentQuestionIndex++;
+      document.getElementById("next-level").style.display = "none";
+      loadQuestion();
+    }
+
+    function endLevel() {
+      clearInterval(timerInterval);
+      document.getElementById("game-container").innerHTML = `<p style="font-size: 2em;">Selesai! Skor akhir Anda untuk ${currentKerajaan}: ${score} </p>`;
+      document.getElementById("next-level").style.display = "none";
+      document.getElementById("restart-game").style.display = "block";
+      document.getElementById("final-score").innerText = `Skor Akhir: ${score}`;
+      
+      const user = localStorage.getItem("username");
+      scores.push({
+        nama: user,
+        skor: score,
+        timestamp: new Date().toISOString(),
+        kerajaan: currentKerajaan
+      });
+      localStorage.setItem("scores", JSON.stringify(scores));
+      updateLeaderboard();
+    }
+
+    function ulangPermainan() {
+      muatLevel(currentKerajaan);
+    }
+
+    function startTimer() {
+      let timeLeft = timePerLevel;
+      document.getElementById("timer").innerText = `Waktu tersisa: ${formatTime(timeLeft)}`;
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = `Waktu tersisa: ${formatTime(timeLeft)}`;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          endLevel();
+        }
+      }, 1000);
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function updateLeaderboard() {
+      const tablesDiv = document.getElementById("leaderboard-tables");
+      tablesDiv.innerHTML = "";
+      
+      const kingdoms = Object.keys(quizData);
+      
+      kingdoms.forEach(kingdom => {
+        const kingdomScores = scores.filter(s => s.kerajaan === kingdom)
+          .sort((a, b) => {
+            if (b.skor !== a.skor) return b.skor - a.skor;
+            return new Date(a.timestamp) - new Date(b.timestamp);
+          })
+          .slice(0, 10);
+          
+        const tableContainer = document.createElement("div");
+        tableContainer.classList.add("leaderboard-table");
+        
+        tableContainer.innerHTML = `<h3>${kingdom}</h3>`;
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <tr>
+            <th>Peringkat</th>
+            <th>Nama</th>
+            <th>Skor</th>
+            <th>Waktu</th>
+          </tr>
+        `;
+        
+        kingdomScores.forEach((entry, index) => {
+          const row = document.createElement("tr");
+          const date = new Date(entry.timestamp);
+          const formattedTime = date.toLocaleString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit', 
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+          });
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${entry.nama}</td>
+            <td>${entry.skor}</td>
+            <td>${formattedTime}</td>
+          `;
+          table.appendChild(row);
+        });
+        
+        tableContainer.appendChild(table);
+        tablesDiv.appendChild(tableContainer);
+      });
+    }
+  </script>
+</body>
+</html>
